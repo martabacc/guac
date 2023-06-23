@@ -58,11 +58,11 @@ async function main() {
         // Create an instance of your protobuf message
         const message = MessageProto.create({
             "id": "6481824a3243b6632460a5f7",
-            "requestId": "648187bc001ef23c4c2c5dcb",
-            "actionType": "SUBSCRIBE",
-            "campaignId": "6481824a3243b6632460a5f7",
-            "merchantId": "G527050780",
-            "eventTimestamp": Date.now()
+            "request_id": "648187bc001ef23c4c2c5dcb",
+            "action_type": "1",
+            "campaign_id": "6481824a3243b6632460a5f7",
+            "merchant_id": "G527050780",
+            "event_timestamp": Date.now()
         });
         const key = KeyProto.create({
             "id": "6481824a3243b6632460a5f7"
