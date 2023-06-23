@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// [START declaration]
+import "google/protobuf/timestamp.proto";
+// [END declaration]
+
+// [START java_declaration]
+option java_multiple_files = true;
+option java_package = "com.gopaymerchant.esb.campaign";
+option java_outer_classname = "CampaignSubscription";
+option go_package="source.golabs.io/sherlock/go-midtrans-esb-log-entities/gopaymerchant/CampaignSubscription";
+// [END java_declaration]
+
+
+// [START messages]
+message CampaignSubscriptionMessage {
+  string id = 1;
+  string request_id = 2;
+  CampaignSubscriptionActionTypes.Enum action_type = 3;
+  string campaign_id = 4;
+  string merchant_id = 5;
+  google.protobuf.Timestamp event_timestamp = 6;
+}
+
+message CampaignSubscriptionActionTypes {
+  enum Enum {
+    UNKNOWN = 0;
+    SUBSCRIBE = 1;
+    UNSUBSCRIBE = 2;
+  }
+}
+
+// [END messages]
