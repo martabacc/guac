@@ -10,22 +10,28 @@ async function publishProtobufToKafka(topic, message, key) {
 
         producer.connect();
 
-        producer.on('ready', () => {
-            const payload = {
-                topic: 'campaign-subscription',
-                messages: [message],
-                // If you want to customize partitioning, uncomment the following line:
-                 key: [key]
-            };
-
-            producer.produce(payload, (err) => {
-                if (err) {
-                    console.error('Error publishing message to Kafka:', err);
-                } else {
-                    console.log('Message published successfully to Kafka!');
-                }
-                producer.disconnect();
-            });
+        producer.on('ready', function() {
+            try {
+                producer.produce(
+                    // Topic to send the message to
+                    topic,
+                    // optionally we can manually specify a partition for the message
+                    // this defaults to -1 - which will use librdkafka's default partitioner (consistent random for keyed messages, random for unkeyed messages)
+                    null,
+                    // Message to send. Must be a buffer
+                    [message],
+                    // for keyed messages, we also specify the key - note that this field is optional
+                    [key],
+                    // you can send a timestamp here. If your broker version supports it,
+                    // it will get added. Otherwise, we default to 0
+                    Date.now(),
+                    // you can send an opaque token here, which gets passed along
+                    // to your delivery reports
+                );
+            } catch (err) {
+                console.error('A problem occurred when sending our message');
+                console.error(err);
+            }
         });
 
         producer.on('event.error', (err) => {
