@@ -28,6 +28,7 @@ async function publishProtobufToKafka(topic, message, key) {
                     // you can send an opaque token here, which gets passed along
                     // to your delivery reports
                 );
+
             } catch (err) {
                 console.error('A problem occurred when sending our message');
                 console.error(err);
