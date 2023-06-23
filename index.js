@@ -5,13 +5,14 @@ async function publishProtobufToKafka(topic, message, key) {
     try {
         const producer = new Kafka.Producer({
             'metadata.broker.list': 'localhost:9092,localhost:9093,localhost:9094', // Update with your Kafka broker address
+            'client.id': 'nginx-fwd',
         });
 
         producer.connect();
 
         producer.on('ready', () => {
             const payload = {
-                topic,
+                topic: 'campaign-subscription',
                 messages: [message],
                 // If you want to customize partitioning, uncomment the following line:
                  key: [key]
