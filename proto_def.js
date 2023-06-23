@@ -2,6 +2,28 @@ const protobuf = require('protobufjs');
 
 const root = protobuf.Root.fromJSON({
     nested: {
+        google: {
+            nested: {
+                protobuf: {
+                    nested: {
+                        Timestamp: {
+                            fields: {
+                                seconds: {
+                                    type: 'int64',
+                                    id: 1,
+                                    camelCase: 'seconds',
+                                },
+                                nanos: {
+                                    type: 'int32',
+                                    id: 2,
+                                    camelCase: 'nanos',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
         gopaymerchant: {
             nested: {
                 esb: {
