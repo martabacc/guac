@@ -87,6 +87,7 @@ async function main() {
 
         console.log('Serialized Key:', serializedKey);
         console.log('Serialized message:', serializedMessage);
+        console.log('decoded back:', CampaignSubscriptionMessage.decode(serializedMessage));
         await publishProtobufToKafka('campaign-subscription', serializedMessage, serializedKey);
     } catch (error) {
         console.error('An error occurred:', error);
