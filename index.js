@@ -1,11 +1,12 @@
 const Kafka = require('node-rdkafka');
-const protobuf = require('protobufjs');
 const root = require('./proto_def');
 
 async function publishProtobufToKafka(topic, serializedMessage) {
     try {
         const producer = new Kafka.Producer({
             'metadata.broker.list': 'localhost:9092,localhost:9093,localhost:9094', // Update with your Kafka broker address
+            'dr_msg_cb': true, // Enable delivery reports
+            'event_cb': true, // Enable event callbacks
             'client.id': 'nginx-fwd',
         });
 
@@ -55,16 +56,23 @@ async function publishProtobufToKafka(topic, serializedMessage) {
 // Example usage
 async function main() {
     try {
-        // Get the message type
         const MyMessage = root.lookupType('MyMessage');
+        const Timestamp = root.lookupType('google.protobuf.Timestamp');
 
-        // Create an instance of the message
+        // Create an instance of the Timestamp message
+        const timestamp = Timestamp.fromObject({
+            seconds: Math.floor(Date.parse('2023-06-23T10:40:21Z') / 1000),
+            nanos: 0,
+        });
+
+        // Create an instance of the MyMessage message
         const message = MyMessage.create({
             id: '6481824a3243b6632460a5f7',
-            request_id: '648187bc001ef23c4c2c5dcb',
-            action_type: '1',
-            campaign_id: '6481824a3243b6632460a5f7',
-            merchant_id: 'G527050780'
+            requestId: '648187bc001ef23c4c2c5dcb',
+            actionType: '1',
+            campaignId: '6481824a3243b6632460a5f7',
+            merchantId: 'G527050780',
+            eventTimestamp: timestamp,
         });
 
         // Serialize the message to bytes

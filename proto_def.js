@@ -11,10 +11,12 @@ module.exports = protobuf.Root.fromJSON({
                                 seconds: {
                                     type: 'int64',
                                     id: 1,
+                                    camelCase: 'seconds',
                                 },
                                 nanos: {
                                     type: 'int32',
                                     id: 2,
+                                    camelCase: 'nanos',
                                 },
                             },
                         },
@@ -27,26 +29,32 @@ module.exports = protobuf.Root.fromJSON({
                 id: {
                     type: 'string',
                     id: 1,
+                    camelCase: 'id',
                 },
-                request_id: {
+                requestId: {
                     type: 'string',
                     id: 2,
+                    camelCase: 'requestId',
                 },
-                action_type: {
+                actionType: {
                     type: 'string',
                     id: 3,
+                    camelCase: 'actionType',
                 },
-                campaign_id: {
+                campaignId: {
                     type: 'string',
                     id: 4,
+                    camelCase: 'campaignId',
                 },
-                merchant_id: {
+                merchantId: {
                     type: 'string',
                     id: 5,
+                    camelCase: 'merchantId',
                 },
-                event_timestamp: {
+                eventTimestamp: {
                     type: 'google.protobuf.Timestamp',
                     id: 6,
+                    camelCase: 'eventTimestamp',
                 },
             },
         },
