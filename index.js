@@ -87,6 +87,5 @@ async function main() {
 (async function() {
     await main().then(() => {
         console.log('done')
-        process.exit(0)
     })
 }())
