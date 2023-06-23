@@ -67,7 +67,7 @@ async function main() {
         const topic = 'campaign-subscription';
         const serializedMessage = MessageProto.encode(message).finish();
 
-        console.log(topic, serializedMessage)
+        console.log(topic, new Buffer(serializedMessage))
         await publishProtobufToKafka(topic, serializedMessage, null);
     } catch (error) {
         console.error('An error occurred:', error);
