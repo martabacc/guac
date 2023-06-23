@@ -1,7 +1,7 @@
 const Kafka = require('node-rdkafka');
 const protobuf = require('protobufjs');
 
-async function publishProtobufToKafka(topic, message, key) {
+async function publishProtobufToKafka(topic, serializedMessage) {
     try {
         const producer = new Kafka.Producer({
             'metadata.broker.list': 'localhost:9092,localhost:9093,localhost:9094', // Update with your Kafka broker address
@@ -19,14 +19,17 @@ async function publishProtobufToKafka(topic, message, key) {
                     // this defaults to -1 - which will use librdkafka's default partitioner (consistent random for keyed messages, random for unkeyed messages)
                     null,
                     // Message to send. Must be a buffer
-                    new Buffer.from(message),
+                    serializedMessage,
                     // for keyed messages, we also specify the key - note that this field is optional
                     null,
                     // you can send a timestamp here. If your broker version supports it,
                     // it will get added. Otherwise, we default to 0
                     Date.now(),
                     // you can send an opaque token here, which gets passed along
-                    // to your delivery reports
+                    // to your delivery reports,
+                    () => {
+                        console.log('Message delivered to Kafka!');
+                    }
                 );
 
             } catch (err) {
@@ -68,8 +71,8 @@ async function main() {
         const topic = 'campaign-subscription';
         const serializedMessage = MessageProto.encode(message).finish();
 
-        console.log(topic, new Buffer.from(serializedMessage))
-        await publishProtobufToKafka(topic, serializedMessage, null);
+        console.log(topic, serializedMessage)
+        await publishProtobufToKafka(topic, serializedMessage);
     } catch (error) {
         console.error('An error occurred:', error);
     }
