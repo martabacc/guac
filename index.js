@@ -19,7 +19,7 @@ async function publishProtobufToKafka(topic, message, key) {
                     // this defaults to -1 - which will use librdkafka's default partitioner (consistent random for keyed messages, random for unkeyed messages)
                     null,
                     // Message to send. Must be a buffer
-                    new Buffer(message),
+                    new Buffer.from(message),
                     // for keyed messages, we also specify the key - note that this field is optional
                     null,
                     // you can send a timestamp here. If your broker version supports it,
