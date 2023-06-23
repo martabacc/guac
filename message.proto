@@ -14,6 +14,11 @@ option go_package="source.golabs.io/sherlock/go-midtrans-esb-log-entities/gopaym
 
 
 // [START messages]
+message CampaignSubscriptionKey {
+  string id = 1;
+  google.protobuf.Timestamp event_timestamp = 2;
+}
+
 message CampaignSubscriptionMessage {
   string id = 1;
   string request_id = 2;
