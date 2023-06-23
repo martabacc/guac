@@ -62,7 +62,7 @@ async function main() {
             "action_type": "1",
             "campaign_id": "6481824a3243b6632460a5f7",
             "merchant_id": "G527050780",
-            "event_timestamp": Date.now()
+            "event_timestamp":  "2023-06-23T10:40:21Z"
         });
         const key = KeyProto.create({
             "id": "6481824a3243b6632460a5f7"
