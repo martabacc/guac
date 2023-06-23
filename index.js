@@ -80,4 +80,5 @@ async function main() {
 (async function() {
     await main();
     console.log('done');
+    process.exit(0)
 }())
