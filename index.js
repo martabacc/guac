@@ -21,7 +21,7 @@ async function publishProtobufToKafka(topic, message, key) {
                     // Message to send. Must be a buffer
                     Buffer.from(message),
                     // for keyed messages, we also specify the key - note that this field is optional
-                    [key],
+                    null,
                     // you can send a timestamp here. If your broker version supports it,
                     // it will get added. Otherwise, we default to 0
                     Date.now(),
@@ -73,7 +73,8 @@ async function main() {
         const serializedKey = KeyProto.encode(key).finish();
 
         console.log(topic, serializedMessage)
-        console.log('hex display', serializedMessage.toString('hex'))
+        console.log('msg hex', serializedMessage.toString('hex'))
+        console.log('key hex', serializedKey.toString('hex'))
         await publishProtobufToKafka(topic, serializedMessage, serializedKey);
     } catch (error) {
         console.error('An error occurred:', error);
