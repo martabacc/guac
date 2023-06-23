@@ -56,14 +56,14 @@ async function main() {
         const KeyProto = root.lookupType('message.CampaignSubscriptionKey');
 
         // Create an instance of your protobuf message
-        const message = MessageProto.create(JSON.stringify({
+        const message = MessageProto.create({
             "id": "6481824a3243b6632460a5f7",
             "requestId": "648187bc001ef23c4c2c5dcb",
             "actionType": "SUBSCRIBE",
             "campaignId": "6481824a3243b6632460a5f7",
             "merchantId": "G527050780",
             "eventTimestamp": Date.now()
-        }));
+        });
         const key = KeyProto.create({
             "id": "6481824a3243b6632460a5f7"
         });
