@@ -64,8 +64,7 @@ async function main() {
             "request_id": "648187bc001ef23c4c2c5dcb",
             "action_type": "1",
             "campaign_id": "6481824a3243b6632460a5f7",
-            "merchant_id": "G527050780",
-            "event_timestamp":  "2023-06-23T10:40:21Z"
+            "merchant_id": "G527050780"
         });
 
         const topic = 'campaign-subscription';
