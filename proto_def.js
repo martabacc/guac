@@ -1,6 +1,5 @@
 const Kafka = require('node-rdkafka');
 const protobuf = require('protobufjs');
-const root = require('./proto_def');
 
 async function publishProtobufToKafka(topic, serializedMessage) {
     try {
@@ -55,23 +54,25 @@ async function publishProtobufToKafka(topic, serializedMessage) {
 // Example usage
 async function main() {
     try {
-        // Get the message type
-        const MyMessage = root.lookupType('MyMessage');
+        // Load your protobuf definition
+        const root = await protobuf.load('./message.proto');
+        const MessageProto = root.lookupType('message.CampaignSubscriptionMessage');
 
-        // Create an instance of the message
-        const message = MyMessage.create({
-            id: '6481824a3243b6632460a5f7',
-            request_id: '648187bc001ef23c4c2c5dcb',
-            action_type: '1',
-            campaign_id: '6481824a3243b6632460a5f7',
-            merchant_id: 'G527050780'
+        // Create an instance of your protobuf message
+        const message = MessageProto.create({
+            "id": "6481824a3243b6632460a5f7",
+            "request_id": "648187bc001ef23c4c2c5dcb",
+            "action_type": "1",
+            "campaign_id": "6481824a3243b6632460a5f7",
+            "merchant_id": "G527050780",
+            "event_timestamp":  "2023-06-23T10:40:21Z"
         });
 
-        // Serialize the message to bytes
-        const serializedMessage = MyMessage.encode(message).finish();
+        const topic = 'campaign-subscription';
+        const serializedMessage = MessageProto.encode(message).finish();
 
-        console.log('campaign-subscription', serializedMessage)
-        await publishProtobufToKafka('campaign-subscription', serializedMessage);
+        console.log(topic, serializedMessage)
+        await publishProtobufToKafka(topic, serializedMessage);
     } catch (error) {
         console.error('An error occurred:', error);
     }
