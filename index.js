@@ -10,7 +10,7 @@ async function publishProtobufToKafka(topic, message, key) {
 
         producer.connect();
 
-        producer.on('ready', function() {
+        producer.on('ready', function () {
             try {
                 producer.produce(
                     // Topic to send the message to
@@ -56,14 +56,14 @@ async function main() {
         const KeyProto = root.lookupType('message.CampaignSubscriptionKey');
 
         // Create an instance of your protobuf message
-        const message = MessageProto.create({
+        const message = MessageProto.create(JSON.stringify({
             "id": "6481824a3243b6632460a5f7",
             "requestId": "648187bc001ef23c4c2c5dcb",
             "actionType": "SUBSCRIBE",
             "campaignId": "6481824a3243b6632460a5f7",
             "merchantId": "G527050780",
             "eventTimestamp": Date.now()
-        });
+        }));
         const key = KeyProto.create({
             "id": "6481824a3243b6632460a5f7"
         });
@@ -80,7 +80,7 @@ async function main() {
     }
 }
 
-(async function() {
+(async function () {
     await main().then(() => {
         console.log('done')
     })
