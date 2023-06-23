@@ -40,7 +40,7 @@ async function main() {
     try {
         // Load your protobuf definition
         const root = await protobuf.load('./message.proto');
-        const MyMessage = root.lookupType('package.CampaignSubscriptionMessage');
+        const MyMessage = root.lookupType('message.CampaignSubscriptionMessage');
 
         // Create an instance of your protobuf message
         const message = MyMessage.create({
