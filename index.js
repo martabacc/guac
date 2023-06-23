@@ -32,8 +32,7 @@ async function publishProtobufToKafka(topic, message, key) {
                 console.error('A problem occurred when sending our message');
                 console.error(err);
             } finally {
-                console.log(done);
-                producer
+                console.log('done');
             }
         });
 
