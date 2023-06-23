@@ -63,7 +63,7 @@ async function main() {
         const message = CampaignSubscriptionMessage.create({
             id: '6481824a3243b6632460a5f7',
             request_id: '648187bc001ef23c4c2c5dcb',
-            action_type: 'SUBSCRIBE', // Enum value, can be set as string or integer value
+            action_type: 1, // Enum value, can be set as string or integer value
             campaign_id: '6481824a3243b6632460a5f7',
             merchant_id: 'G527050780',
             event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
