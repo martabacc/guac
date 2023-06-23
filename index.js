@@ -1,7 +1,7 @@
 const Kafka = require('node-rdkafka');
 const root = require('./proto_def');
 
-async function publishProtobufToKafka(topic, serializedMessage) {
+async function publishProtobufToKafka(topic, serializedMessage, serializedKey) {
     try {
         const producer = new Kafka.Producer({
             'metadata.broker.list': 'localhost:9092,localhost:9093,localhost:9094', // Update with your Kafka broker address
@@ -23,7 +23,7 @@ async function publishProtobufToKafka(topic, serializedMessage) {
                     // Message to send. Must be a buffer
                     serializedMessage,
                     // for keyed messages, we also specify the key - note that this field is optional
-                    null,
+                    serializedKey,
                     // you can send a timestamp here. If your broker version supports it,
                     // it will get added. Otherwise, we default to 0
                     Date.now(),
@@ -56,30 +56,38 @@ async function publishProtobufToKafka(topic, serializedMessage) {
 // Example usage
 async function main() {
     try {
-        const MyMessage = root.lookupType('MyMessage');
-        const Timestamp = root.lookupType('google.protobuf.Timestamp');
+        // Get the message type
+        const CampaignSubscriptionMessage = root.lookupType('gopaymerchant.esb.campaign.CampaignSubscriptionMessage');
 
-        // Create an instance of the Timestamp message
-        const timestamp = Timestamp.fromObject({
-            seconds: Math.floor(Date.parse('2023-06-23T10:40:21Z') / 1000),
-            nanos: 0,
-        });
-
-        // Create an instance of the MyMessage message
-        const message = MyMessage.create({
+        // Create an instance of the CampaignSubscriptionMessage
+        const message = CampaignSubscriptionMessage.create({
             id: '6481824a3243b6632460a5f7',
-            requestId: '648187bc001ef23c4c2c5dcb',
-            actionType: '1',
-            campaignId: '6481824a3243b6632460a5f7',
-            merchantId: 'G527050780',
-            eventTimestamp: timestamp,
+            request_id: '648187bc001ef23c4c2c5dcb',
+            action_type: 'SUBSCRIBE', // Enum value, can be set as string or integer value
+            campaign_id: '6481824a3243b6632460a5f7',
+            merchant_id: 'G527050780',
+            event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
+        });
+        // Serialize the message to bytes
+        const serializedMessage = CampaignSubscriptionMessage.encode(message).finish();
+
+
+        /*key*/
+        // Get the message type
+        const CampaignSubscriptionKey = root.lookupType('gopaymerchant.esb.campaign.CampaignSubscriptionKey');
+
+        // Create an instance of the CampaignSubscriptionKey
+        const key = CampaignSubscriptionKey.create({
+            id: '6481824a3243b6632460a5f7',
+            event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
         });
 
-        // Serialize the message to bytes
-        const serializedMessage = MyMessage.encode(message).finish();
+        // Serialize the key to bytes
+        const serializedKey = CampaignSubscriptionKey.encode(key).finish();
 
-        console.log('campaign-subscription', serializedMessage)
-        await publishProtobufToKafka('campaign-subscription', serializedMessage);
+        console.log('Serialized Key:', serializedKey);
+        console.log('Serialized message:', serializedMessage);
+        await publishProtobufToKafka('campaign-subscription', serializedMessage, serializedKey);
     } catch (error) {
         console.error('An error occurred:', error);
     }

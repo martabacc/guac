@@ -1,22 +1,63 @@
 const protobuf = require('protobufjs');
 
-module.exports = protobuf.Root.fromJSON({
+const root = protobuf.Root.fromJSON({
     nested: {
-        google: {
+        gopaymerchant: {
             nested: {
-                protobuf: {
+                esb: {
                     nested: {
-                        Timestamp: {
-                            fields: {
-                                seconds: {
-                                    type: 'int64',
-                                    id: 1,
-                                    camelCase: 'seconds',
+                        campaign: {
+                            nested: {
+                                CampaignSubscriptionKey: {
+                                    fields: {
+                                        id: {
+                                            type: 'string',
+                                            id: 1,
+                                        },
+                                        event_timestamp: {
+                                            type: 'google.protobuf.Timestamp',
+                                            id: 2,
+                                        },
+                                    },
                                 },
-                                nanos: {
-                                    type: 'int32',
-                                    id: 2,
-                                    camelCase: 'nanos',
+                                CampaignSubscriptionMessage: {
+                                    fields: {
+                                        id: {
+                                            type: 'string',
+                                            id: 1,
+                                        },
+                                        request_id: {
+                                            type: 'string',
+                                            id: 2,
+                                        },
+                                        action_type: {
+                                            type: 'CampaignSubscriptionActionTypes.Enum',
+                                            id: 3,
+                                        },
+                                        campaign_id: {
+                                            type: 'string',
+                                            id: 4,
+                                        },
+                                        merchant_id: {
+                                            type: 'string',
+                                            id: 5,
+                                        },
+                                        event_timestamp: {
+                                            type: 'google.protobuf.Timestamp',
+                                            id: 6,
+                                        },
+                                    },
+                                },
+                                CampaignSubscriptionActionTypes: {
+                                    nested: {
+                                        Enum: {
+                                            values: {
+                                                UNKNOWN: 0,
+                                                SUBSCRIBE: 1,
+                                                UNSUBSCRIBE: 2,
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -24,39 +65,7 @@ module.exports = protobuf.Root.fromJSON({
                 },
             },
         },
-        MyMessage: {
-            fields: {
-                id: {
-                    type: 'string',
-                    id: 1,
-                    camelCase: 'id',
-                },
-                requestId: {
-                    type: 'string',
-                    id: 2,
-                    camelCase: 'requestId',
-                },
-                actionType: {
-                    type: 'string',
-                    id: 3,
-                    camelCase: 'actionType',
-                },
-                campaignId: {
-                    type: 'string',
-                    id: 4,
-                    camelCase: 'campaignId',
-                },
-                merchantId: {
-                    type: 'string',
-                    id: 5,
-                    camelCase: 'merchantId',
-                },
-                eventTimestamp: {
-                    type: 'google.protobuf.Timestamp',
-                    id: 6,
-                    camelCase: 'eventTimestamp',
-                },
-            },
-        },
     },
 });
+
+module.exports = root;
