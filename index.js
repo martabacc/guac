@@ -53,7 +53,6 @@ async function main() {
         // Load your protobuf definition
         const root = await protobuf.load('./message.proto');
         const MessageProto = root.lookupType('message.CampaignSubscriptionMessage');
-        const KeyProto = root.lookupType('message.CampaignSubscriptionKey');
 
         // Create an instance of your protobuf message
         const message = MessageProto.create({
@@ -64,12 +63,14 @@ async function main() {
             "merchant_id": "G527050780",
             "event_timestamp":  "2023-06-23T10:40:21Z"
         });
-        const key = KeyProto.create({
-            "id": "6481824a3243b6632460a5f7"
-        });
 
         const topic = 'campaign-subscription';
         const serializedMessage = MessageProto.encode(message).finish();
+
+        const KeyProto = root.lookupType('message.CampaignSubscriptionKey');
+        const key = KeyProto.create({
+            "id": "6481824a3243b6632460a5f7"
+        });
         const serializedKey = KeyProto.encode(key).finish();
 
         console.log(topic, serializedMessage)
