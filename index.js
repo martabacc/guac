@@ -67,16 +67,8 @@ async function main() {
         const topic = 'campaign-subscription';
         const serializedMessage = MessageProto.encode(message).finish();
 
-        const KeyProto = root.lookupType('message.CampaignSubscriptionKey');
-        const key = KeyProto.create({
-            "id": "6481824a3243b6632460a5f7"
-        });
-        const serializedKey = KeyProto.encode(key).finish();
-
         console.log(topic, serializedMessage)
-        console.log('msg hex', serializedMessage.toString('hex'))
-        console.log('key hex', serializedKey.toString('hex'))
-        await publishProtobufToKafka(topic, serializedMessage, serializedKey);
+        await publishProtobufToKafka(topic, serializedMessage, null);
     } catch (error) {
         console.error('An error occurred:', error);
     }
