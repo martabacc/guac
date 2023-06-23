@@ -77,10 +77,6 @@ async function main() {
         await publishProtobufToKafka(topic, serializedMessage, serializedKey);
     } catch (error) {
         console.error('An error occurred:', error);
-        process.exit(1)
-    } finally {
-
-        process.exit(0)
     }
 }
 
