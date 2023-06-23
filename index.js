@@ -66,6 +66,7 @@ async function main() {
             "campaign_id": "6481824a3243b6632460a5f7",
             "merchant_id": "G527050780"
         });
+        console.log('message before encoding', message);
 
         const topic = 'campaign-subscription';
         const serializedMessage = MessageProto.encode(message).finish();
