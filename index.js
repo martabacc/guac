@@ -33,14 +33,17 @@ async function publishProtobufToKafka(topic, message, key) {
                 console.error(err);
             } finally {
                 console.log('done');
+                process.exit(0)
             }
         });
 
         producer.on('event.error', (err) => {
             console.error('Kafka producer error:', err);
+            process.exit(1)
         });
     } catch (error) {
         console.error('Error publishing message to Kafka:', error);
+        process.exit(1)
     }
 }
 
@@ -80,5 +83,4 @@ async function main() {
 (async function() {
     await main();
     console.log('done');
-    process.exit(0)
 }())
