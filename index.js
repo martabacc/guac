@@ -61,7 +61,7 @@ async function main() {
 
         // Create an instance of the CampaignSubscriptionMessage
         const message = CampaignSubscriptionMessage.create({
-            id: '6481824a3243b6632460a5f7',
+            id: 'ikangoreng',
             request_id: '648187bc001ef23c4c2c5dcb',
             action_type: 1, // Enum value, can be set as string or integer value
             campaign_id: '6481824a3243b6632460a5f7',
@@ -70,7 +70,6 @@ async function main() {
         });
         // Serialize the message to bytes
         const serializedMessage = CampaignSubscriptionMessage.encode(message).finish();
-
 
         /*key*/
         // Get the message type
