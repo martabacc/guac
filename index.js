@@ -56,15 +56,15 @@ async function publishProtobufToKafka(topic, serializedMessage, serializedKey) {
 // Example usage
 async function main() {
     try {
+        const date = new Date("2022-03-25");
         // Get the message type
         const CampaignSubscriptionMessage = root.lookupType('gopaymerchant.esb.campaign.CampaignSubscriptionMessage');
         const rawMsg = {
-            id: `${(Math.floor(new Date().getTime())).toString()}`,
-            request_id: '648187bc001ef23c4c2c5dcb',
-            action_type: 1, // Enum value, can be set as string or integer value
-            campaign_id: '6481824a3243b6632460a5f7',
-            merchant_id: 'G527050780',
-            event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
+            id: '002',
+            action_type: 1,
+            campaign_id: 'CAMPAIGN_ID',
+            merchant_id: 'MERCHANT_ID',
+            event_timestamp: {}, // Example timestamp value
         };
 
         console.log("Message to send:", rawMsg)
@@ -81,12 +81,13 @@ async function main() {
         // Create an instance of the CampaignSubscriptionKey
         const key = CampaignSubscriptionKey.create({
             id: '6481824a3243b6632460a5f7',
-            event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
+            event_timestamp: { seconds: date / 1000, nanos: 0 }, // Example timestamp value
         });
 
         // Serialize the key to bytes
         const serializedKey = CampaignSubscriptionKey.encode(key).finish();
 
+        //const sampleBuf = new Buffer.from("0A033030321801220B43414D504149474E5F49442A0B4D45524348414E545F4944" , "hex");
         console.log('Serialized Key:', serializedKey);
         console.log('Serialized message:', serializedMessage);
         console.log('decoded back:', CampaignSubscriptionMessage.decode(serializedMessage));
