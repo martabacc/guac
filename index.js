@@ -61,7 +61,7 @@ async function main() {
 
         // Create an instance of the CampaignSubscriptionMessage
         const message = CampaignSubscriptionMessage.create({
-            id: 'ikangoreng',
+            id: 'ikangoreng_kedua',
             request_id: '648187bc001ef23c4c2c5dcb',
             action_type: "SUBSCRIBE", // Enum value, can be set as string or integer value
             campaign_id: '6481824a3243b6632460a5f7',
