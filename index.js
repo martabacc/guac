@@ -70,7 +70,7 @@ async function main() {
         console.log("Message to send:", rawMsg)
         // Create an instance of the CampaignSubscriptionMessage
         const message = CampaignSubscriptionMessage.create(rawMsg);
-        // Serialize the messagåe to bytes
+        // Serialize the message to bytes
         const serializedMessage = CampaignSubscriptionMessage.encode(message).finish();
 
 
