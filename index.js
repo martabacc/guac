@@ -59,7 +59,7 @@ async function main() {
         // Get the message type
         const CampaignSubscriptionMessage = root.lookupType('gopaymerchant.esb.campaign.CampaignSubscriptionMessage');
         const rawMsg = {
-            id: `${(Math.floor(new Date().getTime() / 1000)).toString()}`,
+            id: `${(Math.floor(new Date().getTime())).toString()}`,
             request_id: '648187bc001ef23c4c2c5dcb',
             action_type: 1, // Enum value, can be set as string or integer value
             campaign_id: '6481824a3243b6632460a5f7',
