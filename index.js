@@ -58,18 +58,21 @@ async function main() {
     try {
         // Get the message type
         const CampaignSubscriptionMessage = root.lookupType('gopaymerchant.esb.campaign.CampaignSubscriptionMessage');
-
-        // Create an instance of the CampaignSubscriptionMessage
-        const message = CampaignSubscriptionMessage.create({
-            id: 'ikangoreng_kedua',
+        const rawMsg = {
+            id: `cuan-king-${(new Date()).toISOString()}`,
             request_id: '648187bc001ef23c4c2c5dcb',
-            action_type: "SUBSCRIBE", // Enum value, can be set as string or integer value
+            action_type: 1, // Enum value, can be set as string or integer value
             campaign_id: '6481824a3243b6632460a5f7',
             merchant_id: 'G527050780',
             event_timestamp: { seconds: Date.now() / 1000, nanos: 0 }, // Example timestamp value
-        });
-        // Serialize the message to bytes
+        };
+
+        console.log("Message to send:", rawMsg)
+        // Create an instance of the CampaignSubscriptionMessage
+        const message = CampaignSubscriptionMessage.create(rawMsg);
+        // Serialize the messagåe to bytes
         const serializedMessage = CampaignSubscriptionMessage.encode(message).finish();
+
 
         /*key*/
         // Get the message type
