@@ -62,6 +62,7 @@ async function main() {
         const rawMsg = {
             id: '002',
             action_type: 1,
+            request_id: '12312312312312',
             campaign_id: 'CAMPAIGN_ID',
             merchant_id: 'MERCHANT_ID',
             event_timestamp: {}, // Example timestamp value
