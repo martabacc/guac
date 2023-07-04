@@ -22,13 +22,7 @@ async function handleConnect(client) {
         const reply = await client.publish('myChannel', 'Hello, Redis Sentinel!');
         console.log('Message published:', reply);
 
-        // Subscribe and listen for messages on a channel
-        const subscriber = new Redis();
-        subscriber.on('message', (channel, message) => {
-            console.log('Received message from', channel, ':', message);
-        });
-
-        const count = await subscriber.subscribe('myChannel');
+        const count = await client.subscribe('myChannel');
         console.log('Subscribed to', count, 'channel(s)');
     } catch (error) {
         console.error('Error in async', error);
@@ -49,6 +43,8 @@ async function main() {
     }).on('reconnecting', (attempt, delay) => {
         console.log(`Reconnecting attempt: ${attempt}`);
         console.log(`Next reconnect attempt in ${delay} ms`);
+    }).on('message', (channel, message) => {
+        console.log('Received message from', channel, ':', message);
     });
 }
 main();
