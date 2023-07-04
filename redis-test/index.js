@@ -5,7 +5,7 @@ let redis = new Redis({
     sentinels: [
         { host: process.env.SENTINEL_1, port: 26379 },
         { host: process.env.SENTINEL_2, port: 26379 },
-        { host: process.env.SENTINEL_3, port: 15381 }
+        { host: process.env.SENTINEL_3, port: 26379 }
     ],
     name: 'mymaster'
 });
