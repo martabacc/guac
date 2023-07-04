@@ -12,7 +12,7 @@ const sentinelOptions = {
         { host: process.env.SENTINEL_2, port: 26379 },
         { host: process.env.SENTINEL_3, port: 26379 }
     ],
-    name: 'mymaster'
+    name: process.env.MASTER_SENTINEL
 };
 
 // Create Redis Sentinel client
