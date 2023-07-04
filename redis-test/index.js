@@ -4,7 +4,7 @@ console.log(
     process.env.SENTINEL_1,
     process.env.SENTINEL_2,
     process.env.SENTINEL_3,
-    MASTER_SENTINEL
+    process.env.MASTER_SENTINEL
 );
 // Redis Sentinel configuration
 const sentinelOptions = {
