@@ -15,6 +15,7 @@ const sentinelOptions = {
     name: process.env.MASTER_SENTINEL
 };
 
+console.log(sentinelOptions)
 // Create Redis Sentinel client
 const sentinelClient = new Redis(sentinelOptions);
 
