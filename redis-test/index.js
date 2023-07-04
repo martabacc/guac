@@ -44,8 +44,11 @@ async function main() {
     sentinelClient.on('connect', async () => {
         console.log('Connected to Redis Sentinel');
         await handleConnect(sentinelClient)
-    }).on('error', (e) => {
-        console.error('Error:', e);
+    }).on('error', (error) => {
+        console.error('An error occurred:', error.message);
+    }).on('reconnecting', (attempt, delay) => {
+        console.log(`Reconnecting attempt: ${attempt}`);
+        console.log(`Next reconnect attempt in ${delay} ms`);
     });
 }
 main();
