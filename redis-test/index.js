@@ -1,5 +1,10 @@
-const redis = require('redis');
+const Redis = require('ioredis');
 
+console.log(
+    process.env.SENTINEL_1,
+    process.env.SENTINEL_2,
+    process.env.SENTINEL_3
+);
 // Redis Sentinel configuration
 const sentinelOptions = {
     sentinels: [
@@ -7,28 +12,30 @@ const sentinelOptions = {
         { host: process.env.SENTINEL_2, port: 26379 },
         { host: process.env.SENTINEL_3, port: 26379 }
     ],
-    name: 'LordMaster'
+    name: 'mymaster'
 };
 
 // Create Redis Sentinel client
-const sentinelClient = redis.createClient(sentinelOptions);
+const sentinelClient = new Redis(sentinelOptions);
 
 // Connect to the Sentinel
 sentinelClient.on('connect', () => {
     console.log('Connected to Redis Sentinel');
+}).on('error', e => {
+    console.error('error during connecting', e.message || 'no e obj');
 });
 
 // Publish a message to a channel
-sentinelClient.publish('myChannel', 'Hello, Redis Sentinel!', (err, reply) => {
-    if (err) {
-        console.error('Error publishing message:', err);
-    } else {
+sentinelClient.publish('myChannel', 'Hello, Redis Sentinel!')
+    .then((reply) => {
         console.log('Message published:', reply);
-    }
-});
+    })
+    .catch((err) => {
+        console.error('Error publishing message:', err);
+    });
 
 // Subscribe and listen for messages on a channel
-const subscriber = redis.createClient();
+const subscriber = new Redis();
 subscriber.on('message', (channel, message) => {
     console.log('Received message from', channel, ':', message);
 });
