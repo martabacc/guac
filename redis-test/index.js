@@ -3,9 +3,9 @@
 let Redis = require('ioredis');
 let redis = new Redis({
     sentinels: [
-        { host: '127.0.0.1', port: 15379 },
-        { host: '127.0.0.1', port: 15380 },
-        { host: '127.0.0.1', port: 15381 }
+        { host: process.env.SENTINEL_1, port: 26379 },
+        { host: process.env.SENTINEL_2, port: 26379 },
+        { host: process.env.SENTINEL_3, port: 15381 }
     ],
     name: 'mymaster'
 });
