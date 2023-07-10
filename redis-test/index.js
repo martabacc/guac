@@ -2,16 +2,17 @@ const Redis = require('ioredis');
 
 console.log(
     process.env.SENTINEL_1,
-    process.env.SENTINEL_2,
-    process.env.SENTINEL_3,
+    // process.env.SENTINEL_2,
+    // process.env.SENTINEL_3,
     process.env.MASTER_SENTINEL
 );
 // Redis Sentinel configuration
 const sentinelOptions = {
+    connectTimeout: 3600000,
     sentinels: [
-        { host: process.env.SENTINEL_1, port: 26379 },
-        { host: process.env.SENTINEL_2, port: 26379 },
-        { host: process.env.SENTINEL_3, port: 26379 }
+        { host: process.env.SENTINEL_1, port: 26379 }
+        // { host: process.env.SENTINEL_2, port: 26379 },
+        // { host: process.env.SENTINEL_3, port: 26379 }
     ],
     name: process.env.MASTER_SENTINEL
 };
