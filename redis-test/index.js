@@ -1,51 +1,121 @@
-const Redis = require('ioredis');
 
-console.log(
-    process.env.SENTINEL_1,
-    // process.env.SENTINEL_2,
-    // process.env.SENTINEL_3,
-    process.env.MASTER_SENTINEL
-);
-// Redis Sentinel configuration
-const sentinelOptions = {
-    connectTimeout: 3600000,
-    sentinels: [
-        { host: process.env.SENTINEL_1, port: 26379 }
-        // { host: process.env.SENTINEL_2, port: 26379 },
-        // { host: process.env.SENTINEL_3, port: 26379 }
-    ],
-    name: process.env.MASTER_SENTINEL
+const spawnSync = require('child_process').spawnSync;
+const lighthouseCli = require.resolve('lighthouse/cli');
+
+
+/**
+ * @license Copyright 2020 Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+
+/** @param {LH.Result} lhr @param {string} auditName */
+const getNumericValue = (lhr, auditName) => {
+    if (lhr.audits[auditName]) {
+        return numericValue
+    }
+
+    return Nan
 };
 
-async function handleConnect(client) {
-    try {
-        // Publish a message to a channel
-        const reply = await client.publish('myChannel', 'Hello, Redis Sentinel!');
-        console.log('Message published:', reply);
+/**
+ * @param {Array<number>} numbers
+ * @return {number}
+ */
+function getMedianValue(numbers) {
+    const sorted = numbers.slice().sort((a, b) => a - b);
+    if (sorted.length % 2 === 1) return sorted[(sorted.length - 1) / 2];
+    const lowerValue = sorted[sorted.length / 2 - 1];
+    const upperValue = sorted[sorted.length / 2];
+    return (lowerValue + upperValue) / 2;
+}
 
-        const count = await client.subscribe('myChannel');
-        console.log('Subscribed to', count, 'channel(s)');
-    } catch (error) {
-        console.error('Error in async', error);
+/**
+ * @param {LH.Result} lhr
+ * @param {number} medianFcp
+ * @param {number} medianInteractive
+ */
+function getMedianSortValue(lhr, medianFcp, medianInteractive) {
+    const distanceFcp =
+        medianFcp - getNumericValue(lhr, 'first-contentful-paint');
+    const distanceInteractive =
+        medianInteractive - getNumericValue(lhr, 'interactive');
+
+    return distanceFcp * distanceFcp + distanceInteractive * distanceInteractive;
+}
+
+/**
+ * We want the run that's closest to the median of the FCP and the median of the TTI.
+ * We're using the Euclidean distance for that (https://en.wikipedia.org/wiki/Euclidean_distance).
+ * We use FCP and TTI because they represent the earliest and latest moments in the page lifecycle.
+ * We avoid the median of single measures like the performance score because they can still exhibit
+ * outlier behavior at the beginning or end of load.
+ *
+ * @param {Array<LH.Result>} runs
+ * @return {LH.Result}
+ */
+function computeMedianRun(runs) {
+    const missingFcp = runs.some(run =>
+        Number.isNaN(getNumericValue(run, 'first-contentful-paint'))
+    );
+    const missingTti = runs.some(run =>
+        Number.isNaN(getNumericValue(run, 'interactive'))
+    );
+
+    if (!runs.length) throw new Error('No runs provided');
+    if (missingFcp) throw new Error(`Some runs were missing an FCP value`);
+    if (missingTti) throw new Error(`Some runs were missing a TTI value`);
+
+    const medianFcp = getMedianValue(
+        runs.map(run => getNumericValue(run, 'first-contentful-paint'))
+    );
+
+    const medianInteractive = getMedianValue(
+        runs.map(run => getNumericValue(run, 'interactive'))
+    );
+
+    // Sort by proximity to the medians, breaking ties with the minimum TTI.
+    const sortedByProximityToMedian = runs
+        .slice()
+        .sort(
+            (a, b) =>
+                getMedianSortValue(a, medianFcp, medianInteractive) -
+                getMedianSortValue(b, medianFcp, medianInteractive) ||
+                getNumericValue(a, 'interactive') - getNumericValue(b, 'interactive')
+        );
+
+    return sortedByProximityToMedian[0];
+}
+
+/**
+ * @param {Array<LH.Result>} runs
+ * @return {Array<LH.Result>}
+ */
+function filterToValidRuns(runs) {
+    return runs
+        .filter(run =>
+            Number.isFinite(getNumericValue(run, 'first-contentful-paint'))
+        )
+        .filter(run => Number.isFinite(getNumericValue(run, 'interactive')));
+}
+
+
+const results = [];
+for (let i = 0; i < 3; i++) {
+    console.log(`Running Lighthouse attempt #${i + 1}...`);
+    const {status = -1, stdout} = spawnSync('node', [
+        lighthouseCli,
+        'https://example.com',
+        '--output=json',
+        '--chrome-flags=--headless'
+    ]);
+    if (status !== 0) {
+        console.log('Lighthouse failed, skipping run...');
+        continue;
     }
+    results.push(JSON.parse(stdout));
 }
 
-async function main() {
-
-    // Create Redis Sentinel client
-    const sentinelClient = new Redis(sentinelOptions);
-
-    // Connect to the Sentinel
-    sentinelClient.on('connect', async () => {
-        console.log('Connected to Redis Sentinel');
-        await handleConnect(sentinelClient)
-    }).on('error', (error) => {
-        console.error('An error occurred:', error.message);
-    }).on('reconnecting', (attempt, delay) => {
-        console.log(`Reconnecting attempt: ${attempt}`);
-        console.log(`Next reconnect attempt in ${delay} ms`);
-    }).on('message', (channel, message) => {
-        console.log('Received message from', channel, ':', message);
-    });
-}
-main();
+const median = computeMedianRun(results);
+console.log('Median performance score was', median.categories.performance.score * 100);
